@@ -153,8 +153,9 @@ class DuckDuckGoSearchTool(Tool):
     }
     output_type = "any"
 
-    def __init__(self, **kwargs):
-        super().__init__(self, **kwargs)
+    def __init__(self, *args, max_results=10, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.max_results = max_results
         try:
             from duckduckgo_search import DDGS
         except ImportError:
@@ -164,7 +165,7 @@ class DuckDuckGoSearchTool(Tool):
         self.ddgs = DDGS()
 
     def forward(self, query: str) -> str:
-        results = self.ddgs.text(query, max_results=10)
+        results = self.ddgs.text(query, max_results=self.max_results)
         postprocessed_results = [
             f"[{result['title']}]({result['href']})\n{result['body']}"
             for result in results
