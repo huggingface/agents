@@ -412,6 +412,7 @@ class LiteLLMModel(Model):
         model_id="anthropic/claude-3-5-sonnet-20240620",
         api_base=None,
         api_key=None,
+        **kwargs
     ):
         super().__init__()
         self.model_id = model_id
@@ -419,6 +420,7 @@ class LiteLLMModel(Model):
         litellm.add_function_to_prompt = True
         self.api_base = api_base
         self.api_key = api_key
+        self.kwargs = kwargs
 
     def __call__(
         self,
@@ -438,6 +440,7 @@ class LiteLLMModel(Model):
             max_tokens=max_tokens,
             api_base=self.api_base,
             api_key=self.api_key,
+            **self.kwargs,
         )
         self.last_input_token_count = response.usage.prompt_tokens
         self.last_output_token_count = response.usage.completion_tokens
@@ -462,6 +465,7 @@ class LiteLLMModel(Model):
             max_tokens=max_tokens,
             api_base=self.api_base,
             api_key=self.api_key,
+            **self.kwargs,
         )
         tool_calls = response.choices[0].message.tool_calls[0]
         self.last_input_token_count = response.usage.prompt_tokens
